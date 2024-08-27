@@ -35,53 +35,53 @@ class GFG {
 class Solution {
     // Function to detect cycle in an undirected graph.
     public boolean isCycle(int V, ArrayList<ArrayList<Integer>> adj) {
-        par = new int [V];
-        rank = new int [V];
+        boolean [] vis = new boolean [V];
+        
         
         for(int i=0 ; i<V ; i++) {
-            par[i] = i;
-            rank[i] = 1;
-        }
-        
-        for(int u=0 ; u<V ; u++) {
-            for(Integer v : adj.get(u)) {
-                if( u < v) {
-                    int par_u = find(u,par);
-                    int par_v = find(v,par);
-                    
-                    if(par_u == par_v) return true;
-                    
-                    union(u , v , par , rank);
+            if(!vis[i]) {
+                if (bfs(i,vis,adj) ) {
+                    return true;
                 }
             }
         }
         return false;
     }
     
-    public int [] par;
-    
-    public int [] rank;
-    
-    public int find(int x , int [] par) {
-        if( x == par[x] ) return x;
-        return par[x] = find(par[x] , par);
+    public boolean bfs(int src , boolean [] vis , ArrayList<ArrayList<Integer>> adj) {
+        
+        Queue<Pair> q = new LinkedList<>();
+        q.add(new Pair(src,-1));
+        
+        vis[src] = true;
+        
+        while(!q.isEmpty()) {
+            Pair curr = q.poll();
+            int currNode = curr.node;
+            int currPar = curr.par;
+            
+            for(int neigh : adj.get(currNode)) {
+                if(neigh == currPar) continue;
+                if(!vis[neigh]) {
+                    q.add(new Pair(neigh , currNode));
+                    vis[neigh] = true;
+                }
+                else if(neigh != currPar) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
+}
+
+class Pair {
+    int node;
+    int par;
     
-    public void union (int x, int y , int [] par , int [] rank ) {
-        int a = find(x , par);
-        int b = find(y , par);
-        
-        if(a == b) return;
-        
-        if(rank[a] > rank[b]) {
-            par[b] = a;
-        }
-        else if(rank[a] < rank[b]) {
-            par[a] = b;
-        }
-        else {
-            par[a] = b;
-            rank[b]++;
-        }
+    Pair(int node , int par) {
+        this.node = node;
+        this.par = par;
     }
 }
