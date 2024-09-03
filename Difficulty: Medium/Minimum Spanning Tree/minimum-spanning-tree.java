@@ -34,53 +34,78 @@ public class Main {
 }
 // } Driver Code Ends
 
-
-
-
 class Solution {
-    // Prim's algorithm has O(ElogV) time complexity and O(V + E) space complexity.
-    // It uses a priority queue to efficiently select the minimum-weight edge. 
-    // The space complexity is linear due to the adjacency list representation and the priority queue. 
-    // Prim's algorithm is efficient for sparse graphs but can be slower than Kruskal's for dense graphs. 
-    // It's implemented using a disjoint-set data structure to avoid revisiting vertices. 
-    // The algorithm runs in O(ElogE) time when using binary heaps for the priority queue. 
-    // For Fibonacci heaps, it can achieve O(E + VlogV) time complexity.
     static int spanningTree(int V, int E, List<List<int[]>> adj) {
-        // Create a priority queue to store vertices based on their edge weights
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
-        
-        // To track visited vertices
-        boolean [] vis = new boolean[V];
-        
-        // Start from vertex 0 (it can be any arbitrary starting point)
-        pq.add(new int[]{0, 0});  // {vertex, weight}
-
-        int ans = 0;
-        
-        while(!pq.isEmpty()) {
-            int [] curr = pq.poll();
-            
-            int currNode = curr[0];
-            int currWt   = curr[1];
-            
-            if(vis[currNode]) continue;
-            
-            vis[currNode] = true;
-            
-            ans += currWt;
-            
-            List<int[]> neighList = adj.get(currNode);
-            
-            for(int [] neigh : neighList) {
-                int neighNode = neigh[0];
-                int neighWt = neigh[1];
+        List<List<Integer>> edges = new ArrayList<>();
+        for(int sv=0; sv<V ; sv++) {
+            for(int [] edge : adj.get(sv)) {
+                int ev = edge[0];
+                int wt = edge[1];
                 
-                if(!vis[neighNode]) {
-                    pq.add(new int [] {neighNode , neighWt});
-                }
+                edges.add(Arrays.asList(sv , ev , wt));
+                
             }
         }
+        Collections.sort(edges , (e1 , e2) -> Integer.compare( e1.get(2) , e2.get(2)));
         
-        return ans;
+        return Kruskal(edges , V);
+    }
+    
+    static int Kruskal(List<List<Integer>> edges , int V) {
+        int sum = 0;
+        DSU dsu = new DSU (V);
+        
+        for(List<Integer> edge : edges) {
+            int u = edge.get(0);
+            int v = edge.get(1);
+            int wt = edge.get(2);
+            
+            int up = dsu.find(u);
+            int vp = dsu.find(v);
+            
+            if(up != vp) {
+                dsu.union(u , v);
+                sum += wt;
+            }
+        }
+        return sum;
+    }
+}
+
+class DSU {
+    int [] par;
+    int [] rank;
+    
+    DSU(int n) {
+        par = new int [n];
+        rank = new int [n];
+        
+        for(int i=0 ; i<n ; i++) {
+            par[i] = i;
+            rank[i] = 1;
+        }
+    }
+    
+    public int find(int u) {
+        if(u == par[u]) return u;
+        return par[u] = find(par[u]);
+    }
+    
+    public void union(int u , int v) {
+        int up = find(u);
+        int vp = find(v);
+        
+        if(up == vp) return;
+        
+        if(rank[up] > rank[vp]) {
+            par[vp] = up; 
+        }
+        else if(rank[vp] > rank[up]) {
+            par[up] = vp;
+        }
+        else {
+            par[up] = vp;
+            rank[vp]++;
+        }
     }
 }
