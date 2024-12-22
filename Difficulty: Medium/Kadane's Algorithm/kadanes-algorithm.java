@@ -38,27 +38,22 @@ class Main {
 
 // User function Template for Java
 class Solution {
-    int maxSubarraySum(int[] arr) {
-        long sum = 0;
-        int max = 0;
-        int neg = 0;
-        int min = Integer.MIN_VALUE;
-        
-        for(int a : arr ) {
-            sum += a;
-            if(sum <= 0) sum = 0;
-            
-            max = Math.max(max , (int)sum);
-            
-            if(a < 0) {
-                neg++;
-                min = Math.max(a , min);
+    // Function to find the sum of contiguous subarray with maximum sum.
+    int maxSubarraySum(int [] arr) {
+        int maxSoFar = Integer.MIN_VALUE; // Stores the maximum sum so far
+        int currentMax = 0;               // Tracks the current subarray sum
+
+        for (int ele : arr) {
+            currentMax += ele;           // Add the current element to the current sum
+            if (currentMax > maxSoFar) {
+                maxSoFar = currentMax;   // Update maxSoFar if currentMax is greater
+            }
+            if (currentMax < 0) {
+                currentMax = 0;          // Reset currentMax to 0 if it becomes negative
             }
         }
-        
-        if(neg == arr.length) return min;
-        return max;
-    }
 
-       
+        return maxSoFar;                 // Return the maximum sum found
+    }
 }
+
