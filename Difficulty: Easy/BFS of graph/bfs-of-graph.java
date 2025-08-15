@@ -3,15 +3,14 @@ class Solution {
     public ArrayList<Integer> bfs(ArrayList<ArrayList<Integer>> adj) {
         // code here
         ArrayList<Integer> ans = new ArrayList<>();
-        int n = adj.size();
-        boolean [] vis = new boolean [n];
         Queue<Integer> q = new LinkedList<>();
+        boolean [] vis = new boolean [adj.size()];
         q.add(0);
         
         while(!q.isEmpty()) {
             int curr = q.poll();
-            ans.add(curr);
             vis[curr] = true;
+            ans.add(curr);
             
             for(int neigh : adj.get(curr)) {
                 if(!vis[neigh]) {
@@ -19,6 +18,7 @@ class Solution {
                     vis[neigh] = true;
                 }
             }
+            
         }
         return ans;
     }
