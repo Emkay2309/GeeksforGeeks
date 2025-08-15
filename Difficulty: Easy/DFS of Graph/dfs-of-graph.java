@@ -3,17 +3,18 @@ class Solution {
     public ArrayList<Integer> dfs(ArrayList<ArrayList<Integer>> adj) {
         // Code here
         ArrayList<Integer> ans = new ArrayList<>();
-        boolean [] vis = new boolean [adj.size()];
+        int n = adj.size();
+        boolean [] vis = new boolean [n];
         
-        for(int i=0 ; i<adj.size() ; i++) {
+        for(int i=0; i<n ; i++) {
             if(!vis[i]) {
                 dfs(i , vis , ans , adj);
-            }    
+            }
         }
         return ans;
     }
     
-    public void dfs(int curr, boolean [] vis , ArrayList<Integer> ans , ArrayList<ArrayList<Integer>> adj) {
+    public void dfs(int curr , boolean [] vis , ArrayList<Integer> ans , ArrayList<ArrayList<Integer>> adj) {
         vis[curr] = true;
         ans.add(curr);
         
