@@ -1,56 +1,46 @@
 class Solution {
     public static ArrayList<Integer> topoSort(int V, int[][] edges) {
         // code here
-        ArrayList<Integer> ans = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
-        for(int i=0; i<V ; i++) {
-            adj.add(new ArrayList<>());
-        }
+        List<List<Integer>> adj = createAdj(V , edges);
+        boolean [] vis = new boolean [V];
+        Stack<Integer> st = new Stack<>();
         
-        for(int a [] : edges) {
-            int u = a[0];
-            int v = a[1];
-            adj.get(u).add(v);
-        }
         
-        boolean[] vis = new boolean[V];
-        boolean[] pathVis = new boolean[V];
-        Stack<Integer> stack = new Stack<>();
-        
-        for(int i = 0; i < V; i++) {
+        for(int i=0 ; i<V ; i++) {
             if(!vis[i]) {
-                if(dfs(adj, i, vis, pathVis, stack)) {
-                    return new ArrayList<>();
-                }
+                dfs( i , vis , st , adj);
             }
         }
         
-        while(!stack.isEmpty()) {
-            ans.add(stack.pop());
-        }
         
+        ArrayList<Integer> ans = new ArrayList<>();
+        while(!st.isEmpty()) {
+            ans.add(st.pop());
+        }
         return ans;
     }
     
-    private static boolean dfs(ArrayList<ArrayList<Integer>> adj, int node, boolean[] vis, boolean[] pathVis, Stack<Integer> stack) {
-        vis[node] = true;
-        pathVis[node] = true;
+    public static void dfs(int curr , boolean [] vis , Stack<Integer> st , List<List<Integer>> adj) {
+        vis[curr] = true;
         
-        for(int neigh : adj.get(node)) {
+        for(int neigh : adj.get(curr)) {
             if(!vis[neigh]) {
-                if(dfs(adj, neigh, vis, pathVis, stack)) {
-                    return true;
-                }
-            } else if(pathVis[neigh]) {
-                // Cycle detected
-                return true;
+                dfs(neigh , vis , st , adj);
             }
         }
-        
-        // Backtrack
-        pathVis[node] = false;
-        // Push to stack when all neighbors are processed
-        stack.push(node);
-        return false;
+        st.push(curr);
+    }
+    
+    
+    
+    public static List<List<Integer>> createAdj( int n , int [][]edges) {
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>()); 
+        }
+        for(int e [] : edges) {
+            adj.get(e[0]).add(e[1]);
+        }
+        return adj;
     }
 }
