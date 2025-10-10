@@ -11,34 +11,33 @@ class Node {
 */
 
 class Solution {
-    ArrayList<ArrayList<Integer>> levels;
-    ArrayList<Integer> ans;
-
     ArrayList<Integer> zigZagTraversal(Node root) {
-        ans = new ArrayList<>();
-        levels = new ArrayList<>();
-        dfs(root, 0);
-
-        // Flatten all levels into ans
-        for (ArrayList<Integer> lvl : levels) ans.addAll(lvl);
-
+        // code here
+        ArrayList<Integer> ans = new ArrayList<>();
+        Queue<Node> q = new LinkedList<>();
+        int level = 0;
+        
+        q.add(root);
+        
+        
+        while(!q.isEmpty()) {
+            int n = q.size();
+            ArrayList<Integer> temp = new ArrayList<>();
+            while(n-- > 0) {
+                Node curr = q.poll();
+                
+                temp.add(curr.data);
+                
+                if(curr.left != null) q.add(curr.left);
+                if(curr.right != null) q.add(curr.right);
+            }
+            
+            if(level%2 != 0) Collections.reverse(temp);
+            
+            ans.addAll(temp);
+            level++;
+        }
         return ans;
-    }
-
-    public void dfs(Node root, int level) {
-        if (root == null) return;
-
-        // If first time visiting this level
-        if (levels.size() == level)
-            levels.add(new ArrayList<>());
-
-        // Even → left to right, Odd → right to left
-        if (level % 2 == 0)
-            levels.get(level).add(root.data);
-        else
-            levels.get(level).add(0, root.data);
-
-        dfs(root.left, level + 1);
-        dfs(root.right, level + 1);
+        
     }
 }
