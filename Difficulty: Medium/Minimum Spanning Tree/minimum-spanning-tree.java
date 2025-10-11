@@ -1,111 +1,68 @@
-//{ Driver Code Starts
-
-
-import java.io.*;
-import java.lang.*;
-import java.util.*;
-
-public class Main {
-    static BufferedReader br;
-    static PrintWriter ot;
-
-    public static void main(String args[]) throws IOException {
-        br = new BufferedReader(new InputStreamReader(System.in));
-        ot = new PrintWriter(System.out);
-        int t = Integer.parseInt(br.readLine().trim());
-        while (t-- > 0) {
-            String s[] = br.readLine().trim().split(" ");
-            int V = Integer.parseInt(s[0]);
-            int E = Integer.parseInt(s[1]);
-            List<List<int[]>> list = new ArrayList<>();
-            for (int i = 0; i < V; i++) list.add(new ArrayList<>());
-            for (int i = 0; i < E; i++) {
-                s = br.readLine().trim().split(" ");
-                int a = Integer.parseInt(s[0]);
-                int b = Integer.parseInt(s[1]);
-                int c = Integer.parseInt(s[2]);
-                list.get(a).add(new int[] {b, c});
-                list.get(b).add(new int[] {a, c});
-            }
-            ot.println(new Solution().spanningTree(V, E, list));
-        }
-        ot.close();
-    }
-}
-// } Driver Code Ends
-
 class Solution {
-    static int spanningTree(int V, int E, List<List<int[]>> adj) {
-        List<List<Integer>> edges = new ArrayList<>();
-        for(int sv=0; sv<V ; sv++) {
-            for(int [] edge : adj.get(sv)) {
-                int ev = edge[0];
-                int wt = edge[1];
-                
-                edges.add(Arrays.asList(sv , ev , wt));
-                
-            }
-        }
-        Collections.sort(edges , (e1 , e2) -> Integer.compare( e1.get(2) , e2.get(2)));
+    public int spanningTree(int V, int[][] edges) {
+        List<List<int[]>> adj = create(V , edges);
         
-        return Kruskal(edges , V);
-    }
-    
-    static int Kruskal(List<List<Integer>> edges , int V) {
         int sum = 0;
-        DSU dsu = new DSU (V);
+        boolean [] inMst = new boolean [V];
+        int [] par = new int [V];
+        Arrays.fill(par , -1);
+        PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparingInt(a->a.wt));
+        pq.offer(new Pair(0,-1,0));
         
-        for(List<Integer> edge : edges) {
-            int u = edge.get(0);
-            int v = edge.get(1);
-            int wt = edge.get(2);
+        while(!pq.isEmpty()) {
+            Pair pair = pq.poll();
+            int currNode = pair.node;
+            int currPar = pair.par;
+            int currWt = pair.wt;
             
-            int up = dsu.find(u);
-            int vp = dsu.find(v);
+            if(inMst[currNode]) continue;
             
-            if(up != vp) {
-                dsu.union(u , v);
-                sum += wt;
+            inMst[currNode] = true;
+            par[currNode] = currPar;
+            
+            sum += currWt;
+            
+            List<int[]> neighList = adj.get(currNode);
+            
+            for(int [] neigh : neighList) {
+                int neighNode = neigh[0];
+                int neighWt = neigh[1];
+                
+                if(!inMst[neighNode]) {
+                    pq.add(new Pair (neighNode , currNode , neighWt));
+                }
             }
         }
         return sum;
+        
+    }
+    
+    public List<List<int[]>> create(int V , int [][] edges) {
+        List<List<int[]>> adj =  new ArrayList<>();
+        for(int i=0 ; i<V ; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        for(int [] e : edges) {
+            int u = e[0];
+            int v = e[1];
+            int wt = e[2];
+            
+            adj.get(u).add(new int [] {v,wt});
+            adj.get(v).add(new int [] {u,wt});
+        }
+        return adj;
     }
 }
 
-class DSU {
-    int [] par;
-    int [] rank;
+class Pair{
+    int node;
+    int par;
+    int wt;
     
-    DSU(int n) {
-        par = new int [n];
-        rank = new int [n];
-        
-        for(int i=0 ; i<n ; i++) {
-            par[i] = i;
-            rank[i] = 1;
-        }
-    }
-    
-    public int find(int u) {
-        if(u == par[u]) return u;
-        return par[u] = find(par[u]);
-    }
-    
-    public void union(int u , int v) {
-        int up = find(u);
-        int vp = find(v);
-        
-        if(up == vp) return;
-        
-        if(rank[up] > rank[vp]) {
-            par[vp] = up; 
-        }
-        else if(rank[vp] > rank[up]) {
-            par[up] = vp;
-        }
-        else {
-            par[up] = vp;
-            rank[vp]++;
-        }
+    Pair(int node , int par , int wt) {
+        this.node = node;
+        this.par = par;
+        this.wt = wt;
     }
 }
