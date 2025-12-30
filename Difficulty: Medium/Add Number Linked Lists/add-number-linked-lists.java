@@ -1,5 +1,4 @@
-/* node for linked list
-
+/*
 class Node {
     int data;
     Node next;
@@ -9,22 +8,21 @@ class Node {
         next = null;
     }
 }
-
 */
 
 class Solution {
-    static Node addTwoLists(Node num1, Node num2) {
+    Node addTwoLists(Node head1, Node head2) {
         Node ans = new Node(-1);
         Node curr = ans;
         
         int carry = 0;
         
-        num1 = reverseLL(num1);
-        num2 = reverseLL(num2);
+        head1 = reverseLL(head1);
+        head2 = reverseLL(head2);
         
-        while(num1 != null || num2 != null || carry > 0) {
-            int val1 = (num1 != null) ? num1.data : 0;
-            int val2 = (num2 != null) ? num2.data : 0;
+        while(head1 != null || head2 != null || carry > 0) {
+            int val1 = (head1 != null) ? head1.data : 0;
+            int val2 = (head2 != null) ? head2.data : 0;
             
             int currSum = val1 + val2 + carry;
             carry = currSum/10;
@@ -33,11 +31,11 @@ class Solution {
             Node newNode = new Node(add);
             curr.next = newNode;
             
-            if(num1 != null) {
-                num1 = num1.next;
+            if(head1 != null) {
+                head1 = head1.next;
             }
-            if(num2 != null) {
-                num2 = num2.next;
+            if(head2 != null) {
+                head2 = head2.next;
             }
             
             curr = curr.next;
@@ -50,7 +48,7 @@ class Solution {
         
     }
     
-     static Node reverseLL(Node head) {
+    Node reverseLL(Node head) {
         Node prev = null; 
         Node curr = head;
         
