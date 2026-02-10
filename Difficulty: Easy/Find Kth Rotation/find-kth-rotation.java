@@ -1,0 +1,11 @@
+class Solution {
+    public int findKRotation(int arr[]) {
+        // Code here
+        for(int i=0; i<arr.length-1; i++){
+            if(arr[i]>arr[i+1]){ // violation
+                return i+1;
+            }
+        }
+        return 0; 
+    }
+}
