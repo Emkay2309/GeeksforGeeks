@@ -1,47 +1,26 @@
-// User function Template for Java
-
 class Solution {
-    // Function to find common elements in three arrays.
-    public List<Integer> commonElements(List<Integer> arr1, List<Integer> arr2,
-                                        List<Integer> arr3) {
-        // Code Here
-        int i = 0, j = 0, k = 0;
-        int n1 = arr1.size();
-        int n2 = arr2.size();
-        int n3 = arr3.size();
+    public ArrayList<Integer> commonElements(int[] a, int[] b, int[] c) {
+        // code here
+        Set<Integer> s1=new HashSet<>();
+        Set<Integer> s2=new HashSet<>();
+        Set<Integer> s3=new HashSet<>();
         
-        List<Integer> list = new ArrayList<>();
-
-        while (i < n1 && j < n2 && k < n3) {
-
-            int a = arr1.get(i);
-            int b = arr2.get(j);
-            int c = arr3.get(k);
-
-            if (a == b && b == c) {
-
-                // add only if not duplicate in result
-                if (list.isEmpty() || list.get(list.size() - 1) != a) {
-                    list.add(a);
-                }
-
-                i++; j++; k++;
-            }
-            else if (a < b) {
-                i++;
-            }
-            else if (b < c) {
-                j++;
-            }
-            else {
-                k++;
+        for(int i:a){
+            s1.add(i);
+        }
+        
+        for(int i : b){
+           s2.add(i);
+        }
+        
+        for(int i : c){
+            if(s1.contains(i) && s2.contains(i)){
+               s3.add(i);  
             }
         }
-
-        if (list.isEmpty()) {
-            list.add(-1);
-        }
-
-        return list;
+        
+        ArrayList<Integer> arr = new ArrayList<>(s3);
+        Collections.sort(arr);
+        return arr;
     }
 }
