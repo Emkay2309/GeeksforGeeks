@@ -1,10 +1,15 @@
 class Solution {
-    // Function to return Breadth First Search Traversal of given graph.
+    ArrayList<Integer> ans;
+    boolean [] vis;
     public ArrayList<Integer> bfs(ArrayList<ArrayList<Integer>> adj) {
-        // code here
-        ArrayList<Integer> ans = new ArrayList<>();
+        ans = new ArrayList<>();
+        vis = new boolean [adj.size()];
+        bfsSolve(adj);
+        return ans;
+    }
+    
+    public void bfsSolve(ArrayList<ArrayList<Integer>> adj) {
         Queue<Integer> q = new LinkedList<>();
-        boolean [] vis = new boolean [adj.size()];
         q.add(0);
         
         while(!q.isEmpty()) {
@@ -18,8 +23,6 @@ class Solution {
                     vis[neigh] = true;
                 }
             }
-            
         }
-        return ans;
     }
 }
